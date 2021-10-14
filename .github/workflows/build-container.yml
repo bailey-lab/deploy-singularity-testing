@@ -15,6 +15,10 @@ on:
   # Trigger on PR
   pull_request: []
 
+  # Trigger on published release
+  release:
+    types: [published]
+
 jobs:
   build-test-containers:
     runs-on: ubuntu-latest
@@ -26,7 +30,7 @@ jobs:
     name: Check ${{ matrix.recipe }}
     steps:
 
-      - name: Check out code for the container build
+      - name: Check Out Code for the Container Build
         uses: actions/checkout@v2
 
       - name: Continue if Singularity Recipe Exists
@@ -70,7 +74,7 @@ jobs:
           cd singularity-ce-${SINGULARITY_VERSION} && \
           ./mconfig -p /usr/local && \
           make -C builddir && \
-          sudo make -C builddir install          
+          sudo make -C builddir install     
 
       - name: Build Container
         if: ${{ env.keepgoing == 'true' }}
@@ -80,18 +84,29 @@ jobs:
          ls 
          if [ -f "${{ matrix.recipe }}" ]; then
             sudo -E singularity build container.sif ${{ matrix.recipe }}
-            tag=$(echo "${recipe/Singularity\./}")
-            if [ "$tag" == "Singularity" ]; then
-                tag=dev
-            fi
-            # Build the container and name by tag
-            echo "Tag is $tag."
-            echo "tag=$tag" >> $GITHUB_ENV
          else
            echo "${{ matrix.recipe }} is not found."
            echo "Present working directory: $PWD"
            ls
          fi
+
+      - name: Generate Tag
+        run: |
+          # If triggered by release, tag with release tag
+          # Otherwise, tag as dev
+          if [[ "${{ github.event_name }}" == "release" ]]; then
+            tag=${{ github.ref }}
+          else 
+            tag=dev
+          fi
+
+          # Debugging
+          echo "${{ github.ref }}"
+          echo "$tag"
+
+          # Name the tag
+          echo "Tag is $tag."
+          echo "tag=$tag" >> $GITHUB_ENV
 
       - name: Login and Deploy Container
         if: (github.event_name != 'pull_request')
