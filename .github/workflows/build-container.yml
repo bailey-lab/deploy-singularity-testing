@@ -96,6 +96,7 @@ jobs:
           # Otherwise, tag as dev
           if [[ "${{ github.event_name }}" == "release" ]]; then
             tag=${{ github.ref }}
+            tag=${tag##*/}
           else 
             tag=dev
           fi
