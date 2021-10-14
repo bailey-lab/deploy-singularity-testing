@@ -2,6 +2,11 @@ name: Singularity Build (manual)
 on: 
   # Manually run workflow
   workflow_dispatch:
+    inputs:
+      tag:
+        description: "Tag for the built container"
+        required: true
+        default: "dev"
 
   # Trigger on push  
   push:
@@ -92,18 +97,17 @@ jobs:
 
       - name: Generate Tag
         run: |
+          # If triggered manually, use tag provided by user (or default)
           # If triggered by release, tag with release tag
-          # Otherwise, tag as dev
-          if [[ "${{ github.event_name }}" == "release" ]]; then
+          # if triggered otherwise, tag as dev
+          if [[ "${{ github.event_name }}" == "workflow_dispatch" ]]; then
+            tag=$${{ github.event.inputs.tag }}
+          elif [[ "${{ github.event_name }}" == "release" ]]; then
             tag=${{ github.ref }}
             tag=${tag##*/}
           else 
             tag=dev
           fi
-
-          # Debugging
-          echo "${{ github.ref }}"
-          echo "$tag"
 
           # Name the tag
           echo "Tag is $tag."
