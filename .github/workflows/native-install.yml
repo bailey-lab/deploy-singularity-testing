@@ -1,5 +1,9 @@
 name: Singularity Build (native)
 on: 
+  # Manually run workflow
+  workflow_dispatch:
+
+  # Trigger on push  
   push:
 
     # Edit the branches here if you want to change deploy behavior
@@ -7,7 +11,7 @@ on:
       - main
       - master
 
-  # Do the builds on all pull requests (to test them)
+  # # Trigger on PR
   pull_request: []
 
 jobs:
