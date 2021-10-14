@@ -101,7 +101,7 @@ jobs:
           # If triggered by release, tag with release tag
           # if triggered otherwise, tag as dev
           if [[ "${{ github.event_name }}" == "workflow_dispatch" ]]; then
-            tag=$${{ github.event.inputs.tag }}
+            tag=${{ github.event.inputs.tag }}
           elif [[ "${{ github.event_name }}" == "release" ]]; then
             tag=${{ github.ref }}
             tag=${tag##*/}
