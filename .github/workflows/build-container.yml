@@ -1,4 +1,4 @@
-name: Singularity Build (manual)
+name: Build Singularity
 on: 
   # Manually run workflow
   workflow_dispatch:
@@ -8,24 +8,24 @@ on:
         required: true
         default: "dev"
 
-  # Trigger on push  
-  push:
+  # # Trigger on push  
+  # push:
 
-    # This recipe shows how to manually define a matrix of singularity recipes (paths) to build
-    # Edit the branches here if you want to change deploy behavior
-    branches:
-      - main
-      - master
+  #   # This recipe shows how to manually define a matrix of singularity recipes (paths) to build
+  #   # Edit the branches here if you want to change deploy behavior
+  #   branches:
+  #     - main
+  #     - master
 
-  # Trigger on PR
-  pull_request: []
+  # # Trigger on PR
+  # pull_request: []
 
-  # Trigger on published release
-  release:
-    types: [published]
+  # # Trigger on published release
+  # release:
+  #   types: [published]
 
 jobs:
-  build-test-containers:
+  build-container:
     runs-on: ubuntu-latest
     strategy:
       fail-fast: false
