@@ -53,7 +53,7 @@ jobs:
           echo "TAG=$tag" >> $GITHUB_ENV
 
       - name: Triggered by Release
-        if: ${{ github.event_name == "release" }}
+        if: github.event_name == 'release'
         run: |
           tag=${{ github.ref }}
           tag=${tag##*/}
