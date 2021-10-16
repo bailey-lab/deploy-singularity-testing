@@ -125,6 +125,23 @@ jobs:
         with:
           name: container
           path: container.sif
+
+  deploy-container:
+    needs: [file-existence, generate-tag, build-container]
+    runs-on: ubuntu-latest
+    steps:
+      - name: Download a single artifact
+        if: github.event_name != 'pull_request'
+        uses: actions/download-artifact@v2
+        with:
+          name: container
+
+      - name: Login and deploy container
+        if: github.event_name != 'pull_request'
+        run: |
+          echo ${{ secrets.GITHUB_TOKEN }} | singularity remote login -u ${{ secrets.GHCR_USERNAME }} --password-stdin oras://ghcr.io
+          singularity push container.sif oras://ghcr.io/${GITHUB_REPOSITORY}:$${{ needs.generate-tag.outputs.tag }}
+
   test-save:
     needs: generate-tag
     runs-on: ubuntu-latest
