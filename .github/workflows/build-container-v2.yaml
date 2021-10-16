@@ -69,7 +69,7 @@ jobs:
         id: save-output
         run: |
           echo "::set-output name=tag::${{ env.TAG }}"
-          echo "Tag is $ {{ env.TAG }}"
+          echo "Tag is ${{ env.TAG }}"
 
   build-container:
     needs: file-existence
