@@ -72,7 +72,7 @@ jobs:
           echo "Tag is ${{ env.TAG }}"
 
   build-container:
-    needs: check-file-existence
+    needs: [check-file-existence, generate-tag]
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
