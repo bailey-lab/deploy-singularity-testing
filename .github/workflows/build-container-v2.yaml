@@ -47,20 +47,20 @@ jobs:
       tag: ${{ steps.save-output.outputs.tag }}
     steps:
       - name: Manually Triggered
-        if: github.event_name == "workflow_dispatch"
+        if: github.event_name == 'workflow_dispatch'
         run: |
           tag=${{ github.event.inputs.tag }}
           echo "TAG=$tag" >> $GITHUB_ENV
 
       - name: Triggered by Release
-        if: github.event_name == "release"
+        if: ${{ github.event_name == "release" }}
         run: |
           tag=${{ github.ref }}
           tag=${tag##*/}
           echo "TAG=$tag" >> $GITHUB_ENV
 
       - name: Triggered by Push or PR
-        if: github.event_name == "push" || github.event_name == "pull_request"
+        if: github.event_name == 'push' || github.event_name == 'pull_request'
         run: |
           tag=dev 
           echo "TAG=$tag" >> $GITHUB_ENV
