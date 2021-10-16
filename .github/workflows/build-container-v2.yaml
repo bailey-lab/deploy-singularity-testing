@@ -41,6 +41,36 @@ jobs:
           files: ${{ env.DEF_PATH }}
           allow_failure: true
 
+  generate-tag:
+    runs-on: ubuntu-latest
+    outputs:
+      tag: ${{ steps.save-output.outputs.tag }}
+    steps:
+      - name: Manually Triggered
+        if: github.event_name == "workflow_dispatch"
+        run: |
+          tag=${{ github.event.inputs.tag }}
+          echo "TAG=$tag" >> $GITHUB_ENV
+
+      - name: Triggered by Release
+        if: github.event_name == "release"
+        run: |
+          tag=${{ github.ref }}
+          tag=${tag##*/}
+          echo "TAG=$tag" >> $GITHUB_ENV
+
+      - name: Triggered by Push or PR
+        if: github.event_name == "push" || github.event_name == "pull_request"
+        run: |
+          tag=dev 
+          echo "TAG=$tag" >> $GITHUB_ENV
+
+      - name: Save output
+        id: save-output
+        run: |
+          echo "::set-output name=tag::${{ env.TAG }}"
+          echo "Tag is $ {{ env.TAG }}"
+
   build-container:
     needs: file-existence
     runs-on: ubuntu-latest
@@ -69,6 +99,12 @@ jobs:
             squashfs-tools \
             libseccomp-dev \
             pkg-config
+
+  test-save:
+    needs: generate-tag
+    runs-on: ubuntu-latest
+    steps:
+      - run: echo ${{needs.generate-tag.outputs.tag}}
 
     # name: Check ${{ matrix.recipe }}
     # steps:
