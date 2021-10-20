@@ -81,7 +81,7 @@ jobs:
       - name: Setup singularity
         uses: eWaterCycle/setup-singularity@v7
         with:
-          singularity-version: 3.6.4
+          singularity-version: 3.8.3
 
       - name: Build Container
         run: |
@@ -96,7 +96,7 @@ jobs:
       - name: Login and deploy container
         if: github.event_name != 'pull_request'
         run: |
-          echo ${{ secrets.GITHUB_TOKEN }} | singularity remote login -u ${{ secrets.GHCR_USERNAME }} --password-stdin oras://ghcr.io
+          echo ${{ secrets.GITHUB_TOKEN }} | singularity remote login --username ${{ secrets.GHCR_USERNAME }} --password-stdin oras://ghcr.io
           singularity push container.sif oras://ghcr.io/${GITHUB_REPOSITORY}:${{ needs.generate-tag.outputs.tag }}
 
   # deploy-container:
