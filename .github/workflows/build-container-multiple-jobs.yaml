@@ -8,21 +8,21 @@ on:
         required: true
         default: "dev"
 
-  # Trigger on push  
-  push:
+  # # Trigger on push  
+  # push:
 
-    # This recipe shows how to manually define a matrix of singularity recipes (paths) to build
-    # Edit the branches here if you want to change deploy behavior
-    branches:
-      - main
-      - master
+  #   # This recipe shows how to manually define a matrix of singularity recipes (paths) to build
+  #   # Edit the branches here if you want to change deploy behavior
+  #   branches:
+  #     - main
+  #     - master
 
-  # Trigger on PR
-  pull_request: []
+  # # Trigger on PR
+  # pull_request: []
 
-  # Trigger on published release
-  release:
-    types: [published]
+  # # Trigger on published release
+  # release:
+  #   types: [published]
 
 # Set path to definition file
 env:
@@ -125,13 +125,14 @@ jobs:
           sudo -E singularity build container.sif ${{ env.DEF_PATH }}
 
       - name: Archive built container
+        if: ${{ !env.ACT }}
         uses: actions/upload-artifact@v2
         with:
           name: container
           path: container.sif
 
       - name: Login and deploy container
-        if: github.event_name != 'pull_request'
+        if: github.event_name != 'pull_request' && ${{ !env.ACT }}
         run: |
           echo ${{ secrets.GITHUB_TOKEN }} | singularity remote login -u ${{ secrets.GHCR_USERNAME }} --password-stdin oras://ghcr.io
           singularity push container.sif oras://ghcr.io/${GITHUB_REPOSITORY}:${{ needs.generate-tag.outputs.tag }}
