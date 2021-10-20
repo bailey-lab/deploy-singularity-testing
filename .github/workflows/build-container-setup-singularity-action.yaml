@@ -85,7 +85,7 @@ jobs:
 
       - name: Build Container
         run: |
-          singularity build container.sif ${{ env.DEF_PATH }}
+          singularity build --fakeroot container.sif ${{ env.DEF_PATH }}
 
       - name: Archive built container
         uses: actions/upload-artifact@v2
