@@ -81,21 +81,20 @@ jobs:
       - name: Setup singularity
         uses: eWaterCycle/setup-singularity@v7
         with:
-          singularity-version: 3.8.3
+          singularity-version: 3.6.4
 
       - name: Build Container
         run: |
           sudo -E singularity build container.sif ${{ env.DEF_PATH }}
 
       - name: Archive built container
-        if: ${{ !env.ACT }}
         uses: actions/upload-artifact@v2
         with:
           name: container
           path: container.sif
 
       - name: Login and deploy container
-        if: github.event_name != 'pull_request' && ${{ !env.ACT }}
+        if: github.event_name != 'pull_request'
         run: |
           echo ${{ secrets.GITHUB_TOKEN }} | singularity remote login -u ${{ secrets.GHCR_USERNAME }} --password-stdin oras://ghcr.io
           singularity push container.sif oras://ghcr.io/${GITHUB_REPOSITORY}:${{ needs.generate-tag.outputs.tag }}
