@@ -27,5 +27,4 @@ jobs:
           token: ${{ secrets.GITHUB_TOKEN }}
           issue-number: 1
           body: |
-            Please build the container and deploy it as a Github Package. It has
-            been two weeks since the last reminder.
+            Please build the container and deploy it as a Github Package. It has been two weeks since the last reminder.
