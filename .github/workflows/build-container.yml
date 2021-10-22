@@ -1,5 +1,5 @@
 name: Build Singularity
-on: 
+on:
   # Manually run workflow
   workflow_dispatch:
     inputs:
@@ -8,7 +8,7 @@ on:
         required: true
         default: "dev"
 
-  # # Trigger on push  
+  # # Trigger on push
   # push:
 
   #   # This recipe shows how to manually define a matrix of singularity recipes (paths) to build
@@ -34,7 +34,6 @@ jobs:
 
     name: Check ${{ matrix.recipe }}
     steps:
-
       - name: Check Out Code for the Container Build
         uses: actions/checkout@v2
 
@@ -42,7 +41,7 @@ jobs:
         run: |
           if [[ -f "${{ matrix.recipe }}" ]]; then
             echo "keepgoing=true" >> $GITHUB_ENV
-          fi          
+          fi
 
       - name: Set up Go 1.13
         if: ${{ env.keepgoing == 'true' }}
@@ -68,7 +67,7 @@ jobs:
         env:
           SINGULARITY_VERSION: 3.8.3
           GOPATH: /tmp/go
-      
+
         run: |
           mkdir -p $GOPATH
           sudo mkdir -p /usr/local/var/singularity/mnt && \
@@ -79,21 +78,21 @@ jobs:
           cd singularity-ce-${SINGULARITY_VERSION} && \
           ./mconfig -p /usr/local && \
           make -C builddir && \
-          sudo make -C builddir install     
+          sudo make -C builddir install
 
       - name: Build Container
         if: ${{ env.keepgoing == 'true' }}
         env:
           recipe: ${{ matrix.recipe }}
         run: |
-         ls 
-         if [ -f "${{ matrix.recipe }}" ]; then
-            sudo -E singularity build container.sif ${{ matrix.recipe }}
-         else
-           echo "${{ matrix.recipe }} is not found."
-           echo "Present working directory: $PWD"
-           ls
-         fi
+          ls
+          if [ -f "${{ matrix.recipe }}" ]; then
+             sudo -E singularity build container.sif ${{ matrix.recipe }}
+          else
+            echo "${{ matrix.recipe }} is not found."
+            echo "Present working directory: $PWD"
+            ls
+          fi
 
       - name: Generate Tag
         run: |
@@ -105,7 +104,7 @@ jobs:
           elif [[ "${{ github.event_name }}" == "release" ]]; then
             tag=${{ github.ref }}
             tag=${tag##*/}
-          else 
+          else
             tag=dev
           fi
 
@@ -117,8 +116,8 @@ jobs:
         if: (github.event_name != 'pull_request')
         env:
           keepgoing: ${{ env.keepgoing }}
-        run: |         
-            if [[ "${keepgoing}" == "true" ]]; then
-                echo ${{ secrets.GITHUB_TOKEN }} | singularity remote login -u ${{ secrets.GHCR_USERNAME }} --password-stdin oras://ghcr.io
-                singularity push container.sif oras://ghcr.io/${GITHUB_REPOSITORY}:${{ env.tag }} 
-            fi
+        run: |
+          if [[ "${keepgoing}" == "true" ]]; then
+              echo ${{ secrets.GITHUB_TOKEN }} | singularity remote login -u ${{ secrets.GHCR_USERNAME }} --password-stdin oras://ghcr.io
+              singularity push container.sif oras://ghcr.io/${GITHUB_REPOSITORY}:${{ env.tag }}
+          fi

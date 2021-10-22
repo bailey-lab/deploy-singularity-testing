@@ -1,5 +1,5 @@
 name: Build Singularity
-on: 
+on:
   # Manually run workflow
   workflow_dispatch:
     inputs:
@@ -8,9 +8,8 @@ on:
         required: true
         default: "dev"
 
-  # Trigger on push  
+  # Trigger on push
   push:
-
     # This recipe shows how to manually define a matrix of singularity recipes (paths) to build
     # Edit the branches here if you want to change deploy behavior
     branches:
@@ -62,7 +61,7 @@ jobs:
       - name: Triggered by Push or PR
         if: github.event_name == 'push' || github.event_name == 'pull_request'
         run: |
-          tag=dev 
+          tag=dev
           echo "TAG=$tag" >> $GITHUB_ENV
 
       - name: Save output

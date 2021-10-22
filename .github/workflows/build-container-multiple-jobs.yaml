@@ -1,5 +1,5 @@
 name: Build Singularity
-on: 
+on:
   # Manually run workflow
   workflow_dispatch:
     inputs:
@@ -8,7 +8,7 @@ on:
         required: true
         default: "dev"
 
-  # # Trigger on push  
+  # # Trigger on push
   # push:
 
   #   # This recipe shows how to manually define a matrix of singularity recipes (paths) to build
@@ -62,7 +62,7 @@ jobs:
       - name: Triggered by Push or PR
         if: github.event_name == 'push' || github.event_name == 'pull_request'
         run: |
-          tag=dev 
+          tag=dev
           echo "TAG=$tag" >> $GITHUB_ENV
 
       - name: Save output
@@ -83,7 +83,7 @@ jobs:
         with:
           go-version: 1.17.x
 
-      - name: Cache Go 
+      - name: Cache Go
         uses: actions/cache@v2
         with:
           path: |
@@ -118,7 +118,7 @@ jobs:
           cd singularity-ce-${SINGULARITY_VERSION} && \
           ./mconfig -p /usr/local && \
           make -C builddir && \
-          sudo make -C builddir install     
+          sudo make -C builddir install
 
       - name: Build Container
         run: |
