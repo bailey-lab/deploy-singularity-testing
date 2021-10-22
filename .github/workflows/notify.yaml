@@ -28,3 +28,10 @@ jobs:
           issue-number: 1
           body: |
             Please build the container and deploy it as a Github Package. It has been two weeks since the last reminder.
+
+            Steps to deploy:
+            ```bash
+            singularity remote login
+            singularity sign container.sif
+            singularity push container.sif library://apascha1/deploy-singularity-testing/{container name}:{tag}
+            ```
