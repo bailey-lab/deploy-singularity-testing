@@ -16,7 +16,8 @@ jobs:
 
       - name: Notify maintainers
         run: |
-          gh issue reopen 1
-          gh issue comment 1 -F .github/workflows/message.md
+          gh issue reopen ${{ env.ISSUE_NUMBER }}
+          gh issue comment ${{ env.ISSUE_NUMBER }} -F .github/workflows/message.md
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          ISSUE_NUMBER: 1
