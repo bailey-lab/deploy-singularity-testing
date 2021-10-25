@@ -9,8 +9,6 @@ on:
 jobs:
   notify-maintainers:
     runs-on: ubuntu-latest
-    permissions:
-      issues: write
     steps:
       - name: Notify maintainers
         env:
