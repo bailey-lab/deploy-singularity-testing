@@ -9,8 +9,12 @@ on:
 jobs:
   notify-maintainers:
     runs-on: ubuntu-latest
+    permissions:
+      issues: write
     steps:
       - name: Notify maintainers
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           gh issue reopen 1
           gh issue comment 1 -F message.md
