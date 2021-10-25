@@ -7,31 +7,10 @@ on:
   workflow_dispatch:
 
 jobs:
-  comment_on_issue:
-    name: Comment on issue
+  notify-maintainers:
     runs-on: ubuntu-latest
-    permissions:
-      issues: write
     steps:
-      - name: Open issue
-        uses: actions-cool/issues-helper@v2
-        with:
-          actions: "open-issue"
-          token: ${{ secrets.GITHUB_TOKEN }}
-          issue-number: 1
-
-      - name: Create comment
-        uses: actions-cool/issues-helper@v2
-        with:
-          actions: "create-comment"
-          token: ${{ secrets.GITHUB_TOKEN }}
-          issue-number: 1
-          body: |
-            Please build the container and deploy it as a Github Package. It has been two weeks since the last reminder.
-
-            Steps to deploy:
-            ```bash
-            singularity remote login
-            singularity sign container.sif
-            singularity push container.sif library://apascha1/deploy-singularity-testing/{container name}:{tag}
-            ```
+      - name: Notify maintainers
+        run: |
+          gh issue reopen 1
+          gh issue comment 1 -F message.md
