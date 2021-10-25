@@ -10,7 +10,7 @@ jobs:
   notify-maintainers:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2
+      # - uses: actions/checkout@v2
 
       - name: GitHub CLI example
         run: gh issue list
@@ -20,6 +20,6 @@ jobs:
       - name: Notify maintainers
         run: |
           gh issue reopen 1
-          gh issue comment 1 -F message.md
+          gh issue comment 1 -F .github/workflows/message.md
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
